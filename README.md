@@ -20,88 +20,71 @@
 I am a highly experienced Senior Software Engineer with over 8 years of professional software development experience. I have led teams, contributed to system design, data pipeline architecture, and analyzed and designed software solutions. My expertise lies in Python and its corresponding frameworks, with a strong understanding of multi-threading. I am skilled in cloud infrastructure technologies such as Bear metal, Azure, Azure Functions, AWS, and Aviatrix. I have experience with on-premise cloud infrastructure. My research abilities enable me to provide value-driven solutions. I am well-versed in the SDLC and can work in cross-functional environments. I possess strong analytical and problem-solving skills, can troubleshoot defects/bugs, develop test plans, and perform peer code reviews. I have experience with Apache Kafka, KSQLDb, and DevOps tools like Git, Docker, CircleCI, Travis, and Kubernetes. I excel in testing frameworks like Pytest and Jest. I am proficient in documentation and meeting project deadlines. Apart from my technical expertise, I have a deep interest in cosmology. Overall, I have a proven track record and a broad range of technical skills, ready to contribute to your organization's success.
 
 ## Skills & Technologies
-![Python](https://img.shields.io/badge/Python-Language-blue) ![Javascript](https://img.shields.io/badge/Javascript-Language-yellow) ![Typescript](https://img.shields.io/badge/Typescript-Language-brightgreen) ![Rust](https://img.shields.io/badge/Rust-Language-orange) ![Ruby](https://img.shields.io/badge/Ruby-Language-red)
-### Programming Language
-- Python, Javascript, Typescript Rust, Ruby
+![Python](https://img.shields.io/badge/Python-Language-blue)
+![Javascript](https://img.shields.io/badge/Javascript-Language-yellow)
+![Typescript](https://img.shields.io/badge/Typescript-Language-brightgreen) 
+![Rust](https://img.shields.io/badge/Rust-Language-orange) ![Ruby](https://img.shields.io/badge/Ruby-Language-red)
 
-### Clouds
 ![Azure](https://img.shields.io/badge/Azure-Bear%20metal%2C%20Azure%2C%20Azure%20Functions%2C%20AWS%2C%20Aviatrix-blue)
 ![AWS](https://img.shields.io/badge/AWS-Amazon%20EC2%2C%20Amazon%20ECS%2C%20Amazon%20Elastic%20BeanStalk%2C%20AWS%20Lambda%2C%20Amazon%20ElastiCache%2C%20AWS%20IAM%2C%20Amazon%20API%20GateWay%2C%20Amazon%20SES-yellow)
 
-- Azure: AppService, Managed Redis Cache, Managed Message Queues(Rabbitmq)
-- AWS: Amazon EC2, Amazon ECS, Amazon Elastic BeanStalk, AWS Lambda, Amazon ElastiCache, AWS Identity and Access Management, Amazon API GateWay, Amazon SES
-
-### Operating Systems
 ![Linux](https://img.shields.io/badge/Linux-OS-green) ![Windows](https://img.shields.io/badge/Windows-OS-blue)
-- Linux, Windows
 
-### Web Servers
 ![Apache](https://img.shields.io/badge/Apache-Server-blue) ![Nginx](https://img.shields.io/badge/Nginx-Server-green) ![Gunicorn](https://img.shields.io/badge/Gunicorn-Server-yellow) ![Uvicorn](https://img.shields.io/badge/Uvicorn-Server-orange) ![Daphne](https://img.shields.io/badge/Daphne-Server-red)
-- Apache, Nginx, Gunicorn,, Uvicorn, Daphne
 
-### Virtualization Tools
-- ![Kubernetes](https://img.shields.io/badge/Kubernetes-Virtualization%20Tool-blue)
-- ![Docker](https://img.shields.io/badge/Docker-Virtualization%20Tool-blue)
-- ![Docker-compose](https://img.shields.io/badge/Docker--compose-Virtualization%20Tool-blue)
-- ![Vagrant](https://img.shields.io/badge/Vagrant-Virtualization%20Tool-orange)
-- ![VirtualBox](https://img.shields.io/badge/VirtualBox-Virtualization%20Tool-yellow)
-- ![VMware](https://img.shields.io/badge/VMware-Virtualization%20Tool-red)
-- ![Hyper-V](https://img.shields.io/badge/Hyper--V-Virtualization%20Tool-lightgrey)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Virtualization%20Tool-blue)
+![Docker](https://img.shields.io/badge/Docker-Virtualization%20Tool-blue) ![Docker-compose](https://img.shields.io/badge/Docker--compose-Virtualization%20Tool-blue) ![Vagrant](https://img.shields.io/badge/Vagrant-Virtualization%20Tool-orange)
+![VirtualBox](https://img.shields.io/badge/VirtualBox-Virtualization%20Tool-yellow)
+![VMware](https://img.shields.io/badge/VMware-Virtualization%20Tool-red)
+![Hyper-V](https://img.shields.io/badge/Hyper--V-Virtualization%20Tool-lightgrey)
 
-### Monitoring
 ![New Relic](https://img.shields.io/badge/New%20Relic-Monitoring%20Tool-blue) ![Grafana](https://img.shields.io/badge/Grafana-Monitoring%20Tool-orange) ![Datadog](https://img.shields.io/badge/Datadog-Monitoring%20Tool-yellow) ![Redash](https://img.shields.io/badge/Redash-Monitoring%20Tool-red) ![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring%20Tool-brightgreen) ![Zabbix](https://img.shields.io/badge/Zabbix-Monitoring%20Tool-important) ![Splunk](https://img.shields.io/badge/Splunk-Monitoring%20Tool-lightgrey) ![Nagios](https://img.shields.io/badge/Nagios-Monitoring%20Tool-blueviolet)
 
+![Sentry](https://img.shields.io/badge/Sentry-Logging%20Tool-blue)
+![ELK Stack](https://img.shields.io/badge/ELK%20Stack-Logging%20Tool-green)
+![Graylog](https://img.shields.io/badge/Graylog-Logging%20Tool-yellow)
+![Fluentd](https://img.shields.io/badge/Fluentd-Logging%20Tool-orange)
+![Logstash](https://img.shields.io/badge/Logstash-Logging%20Tool-red)
+![Papertrail](https://img.shields.io/badge/Papertrail-Logging%20Tool-lightgrey)
+![Loggly](https://img.shields.io/badge/Loggly-Logging%20Tool-blueviolet)
 
-### Logging
-- ![Sentry](https://img.shields.io/badge/Sentry-Logging%20Tool-blue)
-- ![ELK Stack](https://img.shields.io/badge/ELK%20Stack-Logging%20Tool-green)
-- ![Graylog](https://img.shields.io/badge/Graylog-Logging%20Tool-yellow)
-- ![Fluentd](https://img.shields.io/badge/Fluentd-Logging%20Tool-orange)
-- ![Logstash](https://img.shields.io/badge/Logstash-Logging%20Tool-red)
-- ![Papertrail](https://img.shields.io/badge/Papertrail-Logging%20Tool-lightgrey)
-- ![Loggly](https://img.shields.io/badge/Loggly-Logging%20Tool-blueviolet)
+![Postgres](https://img.shields.io/badge/Postgres-Database-blue)
+![MySQL](https://img.shields.io/badge/MySQL-Database-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-yellow)
+![SQLite](https://img.shields.io/badge/SQLite-Database-orange)
+![Redis](https://img.shields.io/badge/Redis-Database-red)
+![Cassandra](https://img.shields.io/badge/Cassandra-Database-lightgrey)
+![Microsoft SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-Database-blueviolet)
 
+![pgAdmin](https://img.shields.io/badge/pgAdmin-Management%20Tool-blue)
+![MySQL Workbench](https://img.shields.io/badge/MySQL%20Workbench-Management%20Tool-green)
+![MongoDB Compass](https://img.shields.io/badge/MongoDB%20Compass-Management%20Tool-yellow)
+![SQLiteStudio](https://img.shields.io/badge/SQLiteStudio-Management%20Tool-orange)
+![RedisInsight](https://img.shields.io/badge/RedisInsight-Management%20Tool-red)
+![DataStax Studio](https://img.shields.io/badge/DataStax%20Studio-Management%20Tool-lightgrey)
+![SQL Server Management Studio](https://img.shields.io/badge/SQL%20Server%20Management%20Studio-Management%20Tool-blueviolet)
 
-### Databases
-- ![Postgres](https://img.shields.io/badge/Postgres-Database-blue)
-- ![MySQL](https://img.shields.io/badge/MySQL-Database-green)
-- ![MongoDB](https://img.shields.io/badge/MongoDB-Database-yellow)
-- ![SQLite](https://img.shields.io/badge/SQLite-Database-orange)
-- ![Redis](https://img.shields.io/badge/Redis-Database-red)
-- ![Cassandra](https://img.shields.io/badge/Cassandra-Database-lightgrey)
-- ![Microsoft SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-Database-blueviolet)
-
-### Database Management Tools
-- ![pgAdmin](https://img.shields.io/badge/pgAdmin-Management%20Tool-blue)
-- ![MySQL Workbench](https://img.shields.io/badge/MySQL%20Workbench-Management%20Tool-green)
-- ![MongoDB Compass](https://img.shields.io/badge/MongoDB%20Compass-Management%20Tool-yellow)
-- ![SQLiteStudio](https://img.shields.io/badge/SQLiteStudio-Management%20Tool-orange)
-- ![RedisInsight](https://img.shields.io/badge/RedisInsight-Management%20Tool-red)
-- ![DataStax Studio](https://img.shields.io/badge/DataStax%20Studio-Management%20Tool-lightgrey)
-- ![SQL Server Management Studio](https://img.shields.io/badge/SQL%20Server%20Management%20Studio-Management%20Tool-blueviolet)
-
-### Tools and Software
-- ![PyCharm](https://img.shields.io/badge/PyCharm-IDE-blue)
-- ![Git](https://img.shields.io/badge/Git-Version%20Control-green)
-- ![GitHub](https://img.shields.io/badge/GitHub-Version%20Control-yellow)
-- ![Azure](https://img.shields.io/badge/Azure-Cloud%20Provider-orange)
-- ![Azure Function](https://img.shields.io/badge/Azure%20Function-Serverless%20Computing-red)
-- ![AWS](https://img.shields.io/badge/AWS-Cloud%20Provider-lightgrey)
-- ![Jenkins](https://img.shields.io/badge/Jenkins-Continuous%20Integration-blueviolet)
-- ![Jira](https://img.shields.io/badge/Jira-Project%20Management-blue)
-- ![GitLab](https://img.shields.io/badge/GitLab-Version%20Control-orange)
-- ![Slack](https://img.shields.io/badge/Slack-Communication-yellow)
-- ![PyTorch](https://img.shields.io/badge/PyTorch-Machine%20Learning-red)
-- ![PyCharm](https://img.shields.io/badge/PyCharm-IDE-lightgrey)
-- ![Lightning](https://img.shields.io/badge/Lightning-Machine%20Learning-blueviolet)
-- ![MLFlow](https://img.shields.io/badge/MLFlow-Machine%20Learning-blue)
-- ![Tensorboard](https://img.shields.io/badge/Tensorboard-Machine%20Learning-brightgreen)
-- ![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-orange)
-- ![Pillow](https://img.shields.io/badge/Pillow-Image%20Processing-yellow)
-- ![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-red)
-- ![NumPy](https://img.shields.io/badge/NumPy-Data%20Analysis-lightgrey)
-- ![SciPy](https://img.shields.io/badge/SciPy-Scientific%20Computing-blue)
-- ![Scikit-learn](https://img.shields.io/badge/Scikit%20learn-Machine%20Learning-blueviolet)
+![PyCharm](https://img.shields.io/badge/PyCharm-IDE-blue)
+![Git](https://img.shields.io/badge/Git-Version%20Control-green)
+![GitHub](https://img.shields.io/badge/GitHub-Version%20Control-yellow)
+![Azure](https://img.shields.io/badge/Azure-Cloud%20Provider-orange)
+![Azure Function](https://img.shields.io/badge/Azure%20Function-Serverless%20Computing-red)
+![AWS](https://img.shields.io/badge/AWS-Cloud%20Provider-lightgrey)
+![Jenkins](https://img.shields.io/badge/Jenkins-Continuous%20Integration-blueviolet)
+![Jira](https://img.shields.io/badge/Jira-Project%20Management-blue)
+![GitLab](https://img.shields.io/badge/GitLab-Version%20Control-orange)
+![Slack](https://img.shields.io/badge/Slack-Communication-yellow)
+![PyTorch](https://img.shields.io/badge/PyTorch-Machine%20Learning-red)
+![PyCharm](https://img.shields.io/badge/PyCharm-IDE-lightgrey)
+![Lightning](https://img.shields.io/badge/Lightning-Machine%20Learning-blueviolet)
+![MLFlow](https://img.shields.io/badge/MLFlow-Machine%20Learning-blue)
+![Tensorboard](https://img.shields.io/badge/Tensorboard-Machine%20Learning-brightgreen)
+![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-orange)
+![Pillow](https://img.shields.io/badge/Pillow-Image%20Processing-yellow)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-red)
+![NumPy](https://img.shields.io/badge/NumPy-Data%20Analysis-lightgrey)
+![SciPy](https://img.shields.io/badge/SciPy-Scientific%20Computing-blue)
+![Scikit-learn](https://img.shields.io/badge/Scikit%20learn-Machine%20Learning-blueviolet)
 
 ## Experience
 
