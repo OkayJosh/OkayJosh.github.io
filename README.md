@@ -102,7 +102,7 @@ I am skilled in documentation and consistently meet project deadlines. My resear
 - **Responsibilities:**
   - Building a Dynamic Billing system based on payment inflows with the option for internal configuration.
   - Architecting the backend (Based on Domain-Driven Design and Microservices)
-  - Building Rest API services using Django, Python
+  - Building Rest API services using Ruby on Rails
   - Integration with legacy Banking and Billing Systems
   - Containerizing the application using Docker and Docker-compose
   - Daily code reviews
