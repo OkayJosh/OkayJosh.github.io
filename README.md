@@ -17,7 +17,14 @@
 [![Documentation](https://img.shields.io/badge/Documentation-Proficient-important)](https://en.wikipedia.org/wiki/Software_documentation)
 [![Cosmology](https://img.shields.io/badge/Cosmology-Deep%20Interest-lightgrey)](https://en.wikipedia.org/wiki/Cosmology)
 
-I am a highly experienced Senior Software Engineer with over 8 years of professional software development experience. I have led teams, contributed to system design, data pipeline architecture, and analyzed and designed software solutions. My expertise lies in Python and its corresponding frameworks, with a strong understanding of multi-threading. I am skilled in cloud infrastructure technologies such as Bear metal, Azure, Azure Functions, AWS, and Aviatrix. I have experience with on-premise cloud infrastructure. My research abilities enable me to provide value-driven solutions. I am well-versed in the SDLC and can work in cross-functional environments. I possess strong analytical and problem-solving skills, can troubleshoot defects/bugs, develop test plans, and perform peer code reviews. I have experience with Apache Kafka, KSQLDb, and DevOps tools like Git, Docker, CircleCI, Travis, and Kubernetes. I excel in testing frameworks like Pytest and Jest. I am proficient in documentation and meeting project deadlines. Apart from my technical expertise, I have a deep interest in cosmology. Overall, I have a proven track record and a broad range of technical skills, ready to contribute to your organization's success.
+I am a seasoned Senior Software Engineer with over 8 years of experience in Fullstack Development and Management. I take initiative and consistently ask questions that drive project success. My strong track record includes leading teams, contributing to system design and architecture, and delivering value-driven software solutions.
+
+With expertise in various cloud infrastructure technologies, including Bare Metal, Azure, Azure Functions, AWS, GCP and Aviatrix, I excel in cross-functional environments. My proficiency in the entire Software Development Life Cycle (SDLC) ensures high-quality software delivery.
+
+I possess strong analytical and problem-solving skills, adept at troubleshooting defects, developing test plans, and conducting thorough peer code reviews. My experience with DevOps tools like Git, Docker, CircleCI, and Travis, along with testing frameworks such as RSpec and Cucumber, ensures efficient and reliable software development.
+
+I am skilled in documentation and consistently meet project deadlines. My research abilities keep me updated on industry trends, enabling me to deliver cutting-edge solutions. I am passionate about contributing to groundbreaking Fintech, AI and DeepTech projects, leveraging my extensive experience and technical skills to drive organizational success.
+
 
 ## Skills & Technologies
 ![Python](https://img.shields.io/badge/Python-Language-blue)
