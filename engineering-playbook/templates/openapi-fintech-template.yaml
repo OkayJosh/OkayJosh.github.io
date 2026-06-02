@@ -1,0 +1,2369 @@
+openapi: 3.0.3
+info:
+  title: GTP API - Sandbox
+  version: 1.0.0
+  x-logo:
+    url: https://s3-eu-west-1.amazonaws.com/tpd/logos/5f977ff6e7ffb200012faf5c/0x0.png
+    altText: Expedier Logo
+    href: https://expedier.co
+  description: |-
+    Guaranty Trust Payments - Expedier APIs (Sandbox Environment)
+
+    Looking to test the APIs interactively? Use our **[Swagger UI Console](/gtp/v1/schema/swagger-ui/)** to execute requests directly against the sandbox backend.
+  contact:
+    name: Expedier API Support
+    email: support@expedier.co
+    url: https://expedier.co/support
+  license:
+    name: Proprietary
+    url: https://expedier.co/terms
+paths:
+  /account:
+    get:
+      operationId: get_account_details
+      description: Retrieve EFB account details for the authenticated client including
+        DDT virtual accounts and linked bank accounts
+      summary: Get Account Details
+      tags:
+      - Account
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailsResponse'
+              examples:
+                AccountDetailsResponse:
+                  value:
+                    success: true
+                    message: Account details retrieved successfully
+                    data:
+                      account:
+                        user_id: 12345
+                        email: business@example.com
+                        company_name: Example Corp
+                        business_type: corporation
+                        contact_email: contact@example.com
+                        contact_phone: '+14165551234'
+                        kyb_status: approved
+                        account_status: active
+                        created_at: '2024-01-15T10:30:00Z'
+                        updated_at: '2024-05-20T14:22:00Z'
+                      ddt_accounts:
+                      - account_number: '1234567'
+                        transit_number: '00001'
+                        institution_number: '001'
+                        institution_name: DCP
+                        currency: CAD
+                        status: active
+                      bank_accounts:
+                      - id: 789
+                        account_name: Example Corp Operating
+                        account_number: '****5678'
+                        bank_name: TD Bank
+                        currency: CAD
+                        verified: true
+                        account_type: checking
+                  summary: Account Details Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /account/update:
+    patch:
+      operationId: update_account_details
+      description: Update contact information, webhook URL, and custom metadata for
+        the authenticated client. Only specified fields will be updated.
+      summary: Update Account Details
+      tags:
+      - Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAccountRequestRequest'
+            examples:
+              UpdateAccountRequest:
+                value:
+                  contact_email: newcontact@example.com
+                  contact_phone: '+14165559999'
+                  webhook_url: https://example.com/webhooks/gtp
+                  metadata:
+                    department: finance
+                    cost_center: CC-001
+                summary: Update Account Request
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAccountRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAccountRequestRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAccountResponse'
+              examples:
+                UpdateAccountResponse:
+                  value:
+                    success: true
+                    message: Account updated successfully
+                    data:
+                      updated_fields:
+                      - contact_email
+                      - webhook_url
+                      account:
+                        contact_email: newcontact@example.com
+                        contact_phone: '+14165551234'
+                        webhook_url: https://example.com/webhooks/gtp
+                        metadata:
+                          department: finance
+                          cost_center: CC-001
+                  summary: Update Account Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /accounts:
+    get:
+      operationId: list_bank_accounts
+      description: List all bank accounts including DDT virtual accounts (CAD) and
+        regular bank accounts linked to the authenticated client
+      summary: List Bank Accounts
+      tags:
+      - Banks
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListBankAccountsResponse'
+              examples:
+                ListBankAccountsResponse:
+                  value:
+                    success: true
+                    message: Bank accounts retrieved successfully
+                    data:
+                      ddt_accounts:
+                      - account_number: '1234567'
+                        transit_number: '00001'
+                        institution_number: '001'
+                        institution_name: DCP
+                        currency: CAD
+                        status: active
+                      bank_accounts:
+                      - id: 789
+                        account_name: Example Corp Operating
+                        account_number: '****5678'
+                        bank_name: TD Bank
+                        currency: CAD
+                        verified: true
+                      total_accounts: 2
+                  summary: List Bank Accounts Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /banks:
+    get:
+      operationId: list_banks
+      description: Get list of available banks for a specific currency. Returns bank
+        codes and names for use in transfers.
+      summary: List Banks
+      parameters:
+      - in: query
+        name: currency
+        schema:
+          type: string
+        description: Currency code (NGN, CAD, USD, GBP, EUR)
+        required: true
+      tags:
+      - Banks
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountDetailsResponse'
+              examples:
+                BankAccountDetailsResponse:
+                  value:
+                    success: true
+                    message: Bank account retrieved successfully
+                    data:
+                      bank_account:
+                        id: 1234
+                        account_name: Example Corp Operating Account
+                        account_number: '****7890'
+                        transit_number: '00001'
+                        institution_number: '001'
+                        bank_name: TD Bank
+                        currency: CAD
+                        account_type: checking
+                        verified: true
+                        status: active
+                        created_at: '2024-05-20T10:30:00Z'
+                        verified_at: '2024-05-21T09:15:00Z'
+                  summary: Bank Account Details Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /banks/validate:
+    post:
+      operationId: validate_bank_account
+      description: Validate a bank account number before initiating a transfer. Returns
+        account holder name if valid. bank_code is required ONLY for NGN and must
+        be omitted for other currencies.
+      summary: Validate Bank Account
+      tags:
+      - Banks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateBankAccountRequestRequest'
+            examples:
+              ValidateNGNBankAccountRequest:
+                value:
+                  currency: NGN
+                  bank_code: 058
+                  account_number: 0123456789
+                summary: Validate NGN Bank Account Request
+              ValidateCADBankAccountRequest:
+                value:
+                  currency: CAD
+                  account_number: recipient@example.com
+                summary: Validate CAD Bank Account Request
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ValidateBankAccountRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ValidateBankAccountRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountDetailsResponse'
+              examples:
+                BankAccountDetailsResponse:
+                  value:
+                    success: true
+                    message: Bank account retrieved successfully
+                    data:
+                      bank_account:
+                        id: 1234
+                        account_name: Example Corp Operating Account
+                        account_number: '****7890'
+                        transit_number: '00001'
+                        institution_number: '001'
+                        bank_name: TD Bank
+                        currency: CAD
+                        account_type: checking
+                        verified: true
+                        status: active
+                        created_at: '2024-05-20T10:30:00Z'
+                        verified_at: '2024-05-21T09:15:00Z'
+                  summary: Bank Account Details Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /currencies:
+    get:
+      operationId: list_currencies
+      description: List all available currencies supported by the platform including
+        currency codes, names, and symbols.
+      summary: List Currencies
+      tags:
+      - Exchange Rates
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeRatesResponse'
+              examples:
+                ExchangeRatesResponse:
+                  value:
+                    success: true
+                    message: Exchange rates retrieved successfully
+                    data:
+                      base_currency: CAD
+                      rates:
+                        USD: '0.7350'
+                        EUR: '0.6820'
+                        GBP: '0.5890'
+                        NGN: '610.50'
+                      timestamp: '2024-05-20T10:30:00Z'
+                      source: live_market
+                      expires_at: '2024-05-20T10:35:00Z'
+                  summary: Exchange Rates Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /rates:
+    get:
+      operationId: get_exchange_rates
+      description: Get all available exchange rates with optional filtering by source
+        and destination currency.
+      summary: Get Exchange Rates
+      parameters:
+      - in: query
+        name: from_currency
+        schema:
+          type: string
+        description: Filter by source currency (e.g., CAD)
+      - in: query
+        name: to_currency
+        schema:
+          type: string
+        description: Filter by destination currency (e.g., USD)
+      tags:
+      - Exchange Rates
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeRatesResponse'
+              examples:
+                ExchangeRatesResponse:
+                  value:
+                    success: true
+                    message: Exchange rates retrieved successfully
+                    data:
+                      base_currency: CAD
+                      rates:
+                        USD: '0.7350'
+                        EUR: '0.6820'
+                        GBP: '0.5890'
+                        NGN: '610.50'
+                      timestamp: '2024-05-20T10:30:00Z'
+                      source: live_market
+                      expires_at: '2024-05-20T10:35:00Z'
+                  summary: Exchange Rates Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /rates/{from_currency}/{to_currency}:
+    get:
+      operationId: get_exchange_rate
+      description: Get exchange rate for a specific currency pair with current buy
+        rate and timestamp.
+      summary: Get Exchange Rate
+      parameters:
+      - in: path
+        name: from_currency
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: to_currency
+        schema:
+          type: string
+        required: true
+      tags:
+      - Exchange Rates
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecificRateResponse'
+              examples:
+                SpecificRateResponse:
+                  value:
+                    success: true
+                    message: Exchange rate retrieved successfully
+                    data:
+                      from_currency: CAD
+                      to_currency: USD
+                      rate: '0.7350'
+                      inverse_rate: '1.3605'
+                      timestamp: '2024-05-20T10:30:00Z'
+                      source: live_market
+                      expires_at: '2024-05-20T10:35:00Z'
+                      example_conversion:
+                        amount: '100.00'
+                        from_currency: CAD
+                        converted_amount: '73.50'
+                        to_currency: USD
+                  summary: Specific Rate Response
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /rates/convert:
+    get:
+      operationId: calculate_conversion
+      description: Calculate currency conversion amount based on current exchange
+        rates. Returns converted amount using live rates.
+      summary: Calculate Conversion
+      parameters:
+      - in: query
+        name: amount
+        schema:
+          type: number
+          format: float
+        description: Amount to convert
+        required: true
+      - in: query
+        name: from_currency
+        schema:
+          type: string
+        description: Source currency code (e.g., USD)
+        required: true
+      - in: query
+        name: to_currency
+        schema:
+          type: string
+        description: Destination currency code (e.g., CAD)
+        required: true
+      tags:
+      - Exchange Rates
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecificRateResponse'
+              examples:
+                SpecificRateResponse:
+                  value:
+                    success: true
+                    message: Exchange rate retrieved successfully
+                    data:
+                      from_currency: CAD
+                      to_currency: USD
+                      rate: '0.7350'
+                      inverse_rate: '1.3605'
+                      timestamp: '2024-05-20T10:30:00Z'
+                      source: live_market
+                      expires_at: '2024-05-20T10:35:00Z'
+                      example_conversion:
+                        amount: '100.00'
+                        from_currency: CAD
+                        converted_amount: '73.50'
+                        to_currency: USD
+                  summary: Specific Rate Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /sandbox/wallets/fund:
+    post:
+      operationId: fund_wallet_sandbox
+      description: Mock deposit/e-transfer funding for sandbox wallets. Supports CAD,
+        NGN, USD, EUR, and GBP. Restricted to sandbox clients.
+      summary: Sandbox Wallet Funding
+      tags:
+      - Wallets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SandboxFundingRequestRequest'
+            examples:
+              SandboxCADFundingRequest:
+                value:
+                  currency: CAD
+                  amount: '1000.00'
+                  sender_email: client@acme.co
+                  sender_name: Acme Corp
+                  sender_fi: TD Canada Trust
+                  memo: Test funding
+                  client_reference: ref_cad_123
+                summary: Sandbox CAD Funding Request
+              SandboxNGNFundingRequest:
+                value:
+                  currency: NGN
+                  amount: '50000.00'
+                  source_account_number: '1234567890'
+                  source_account_name: Acme Corp
+                  source_bank_name: Access Bank
+                  narration: Test NGN deposit
+                  client_reference: ref_ngn_123
+                summary: Sandbox NGN Funding Request
+              SandboxUSDFundingRequest:
+                value:
+                  currency: USD
+                  amount: '1000.00'
+                  source_account_number: '123456789'
+                  source_account_name: Acme Corp
+                  source_bank_name: JPMorgan Chase
+                  routing_number: '021000021'
+                  client_reference: ref_usd_123
+                summary: Sandbox USD Funding Request
+              SandboxEURFundingRequest:
+                value:
+                  currency: EUR
+                  amount: '500.00'
+                  source_iban: DE89370400440532013000
+                  source_bic: DBKEDEMMXXX
+                  source_account_name: Acme Corp
+                  source_bank_name: Deutsche Bank
+                  client_reference: ref_eur_123
+                summary: Sandbox EUR Funding Request
+              SandboxGBPFundingRequest:
+                value:
+                  currency: GBP
+                  amount: '250.00'
+                  source_account_number: '98765432'
+                  source_sort_code: '102030'
+                  source_account_name: Acme Corp
+                  source_bank_name: Barclays
+                  client_reference: ref_gbp_123
+                summary: Sandbox GBP Funding Request
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SandboxFundingRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SandboxFundingRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxFundingResponse'
+              examples:
+                SandboxFundingSuccessResponse:
+                  value:
+                    success: true
+                    message: Sandbox wallet funding initiated successfully
+                    data:
+                      transaction_id: 9821
+                      reference: sandbox_fund_9fa38de091bf2a56
+                      currency: CAD
+                      amount: '1000.00'
+                      status: successful
+                      processed: false
+                  summary: Sandbox Funding Success Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /swap:
+    post:
+      operationId: execute_swap
+      description: Execute a currency swap/exchange between wallets. Converts from
+        one currency to another using current exchange rates.
+      summary: Execute Swap
+      tags:
+      - Swaps
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteSwapRequestRequest'
+            examples:
+              ExecuteSwapRequest:
+                value:
+                  from_wallet_id: wlt_cad_001
+                  to_wallet_id: wlt_usd_002
+                  amount: '1000.00'
+                  from_currency: CAD
+                  to_currency: USD
+                  lock_rate: true
+                  reference: SWAP-2024-001
+                  metadata:
+                    purpose: inventory_purchase
+                    vendor_id: VND-789
+                summary: Execute Swap Request
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExecuteSwapRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExecuteSwapRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecuteSwapResponse'
+              examples:
+                ExecuteSwapResponse:
+                  value:
+                    success: true
+                    message: Currency swap executed successfully
+                    data:
+                      swap:
+                        id: swp_abc123def456
+                        status: completed
+                        from_wallet_id: wlt_cad_001
+                        to_wallet_id: wlt_usd_002
+                        from_amount: '1000.00'
+                        from_currency: CAD
+                        to_amount: '735.00'
+                        to_currency: USD
+                        exchange_rate: '0.7350'
+                        fee: '7.35'
+                        net_amount: '727.65'
+                        rate_locked: true
+                        reference: SWAP-2024-001
+                        created_at: '2024-05-20T10:30:00Z'
+                        completed_at: '2024-05-20T10:30:05Z'
+                  summary: Execute Swap Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /swap/{swap_id}:
+    get:
+      operationId: get_swap_status
+      description: Get detailed status of a specific swap by swap ID including conversion
+        rate, amounts, and timestamps.
+      summary: Get Swap Status
+      parameters:
+      - in: path
+        name: swap_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Swaps
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapDetailsResponse'
+              examples:
+                SwapDetailsResponse:
+                  value:
+                    success: true
+                    message: Swap details retrieved successfully
+                    data:
+                      swap:
+                        id: swp_abc123def456
+                        status: completed
+                        from_wallet_id: wlt_cad_001
+                        to_wallet_id: wlt_usd_002
+                        from_amount: '1000.00'
+                        from_currency: CAD
+                        to_amount: '735.00'
+                        to_currency: USD
+                        exchange_rate: '0.7350'
+                        fee: '7.35'
+                        fee_percentage: '1.00'
+                        net_amount: '727.65'
+                        rate_locked: true
+                        rate_expires_at: '2024-05-20T10:35:00Z'
+                        reference: SWAP-2024-001
+                        metadata:
+                          purpose: inventory_purchase
+                          vendor_id: VND-789
+                        created_at: '2024-05-20T10:30:00Z'
+                        completed_at: '2024-05-20T10:30:05Z'
+                  summary: Swap Details Response
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /swap/list:
+    get:
+      operationId: list_swaps
+      description: List swap/exchange history with pagination and optional currency
+        filtering.
+      summary: List Swaps
+      parameters:
+      - in: query
+        name: currency
+        schema:
+          type: string
+        description: Filter by currency (source or destination)
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number (1-indexed)
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Items per page (max 100)
+      tags:
+      - Swaps
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapDetailsResponse'
+              examples:
+                SwapDetailsResponse:
+                  value:
+                    success: true
+                    message: Swap details retrieved successfully
+                    data:
+                      swap:
+                        id: swp_abc123def456
+                        status: completed
+                        from_wallet_id: wlt_cad_001
+                        to_wallet_id: wlt_usd_002
+                        from_amount: '1000.00'
+                        from_currency: CAD
+                        to_amount: '735.00'
+                        to_currency: USD
+                        exchange_rate: '0.7350'
+                        fee: '7.35'
+                        fee_percentage: '1.00'
+                        net_amount: '727.65'
+                        rate_locked: true
+                        rate_expires_at: '2024-05-20T10:35:00Z'
+                        reference: SWAP-2024-001
+                        metadata:
+                          purpose: inventory_purchase
+                          vendor_id: VND-789
+                        created_at: '2024-05-20T10:30:00Z'
+                        completed_at: '2024-05-20T10:30:05Z'
+                  summary: Swap Details Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /transactions:
+    get:
+      operationId: list_all_transactions
+      description: Get unified transaction history across transfers, swaps, and wallet
+        funding. Supports filtering by type, status, currency, and date range.
+      summary: List All Transactions
+      parameters:
+      - in: query
+        name: currency
+        schema:
+          type: string
+        description: Filter by currency code (ISO 4217)
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number (1-indexed)
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Items per page (max 100)
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter by status (pending, processing, completed, failed, cancelled)
+      - in: query
+        name: type
+        schema:
+          type: string
+        description: Filter by type (transfer, swap, wallet_funding, all)
+      tags:
+      - Transactions
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransactionsResponse'
+              examples:
+                ListTransactionsResponse:
+                  value:
+                    success: true
+                    message: Transactions retrieved successfully
+                    data:
+                      transactions:
+                      - id: txn_abc123
+                        type: transfer
+                        status: completed
+                        amount: '250.00'
+                        currency: CAD
+                        fee: '2.50'
+                        description: 'Payment for invoice #1234'
+                        created_at: '2024-05-20T10:30:00Z'
+                      - id: txn_def456
+                        type: deposit
+                        status: completed
+                        amount: '1000.00'
+                        currency: CAD
+                        fee: '0.00'
+                        description: Wallet funding
+                        created_at: '2024-05-19T14:15:00Z'
+                    pagination:
+                      total: 45
+                      page: 1
+                      page_size: 20
+                      total_pages: 3
+                      has_next: true
+                      has_previous: false
+                  summary: List Transactions Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /transfers:
+    post:
+      operationId: initiate_transfer
+      description: Initiate a new transfer/payout to a bank account. Supports NGN,
+        CAD (eTransfer), and USD transfers with currency-specific requirements. Includes
+        idempotency via client_reference.
+      summary: Initiate Transfer
+      tags:
+      - Transfers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateTransferRequestRequest'
+            examples:
+              NGNTransferRequest:
+                value:
+                  bank_id: 12
+                  account_number: 0123456789
+                  account_name: John Doe
+                  amount: '50000.00'
+                  currency: NGN
+                  description: Payout for services
+                  client_reference: PAY-NGN-5678
+                summary: NGN Transfer Request
+              CADETransferRequest:
+                value:
+                  recipient_email: recipient@example.com
+                  amount: '500.00'
+                  currency: CAD
+                  reference: Payout for services
+                  client_reference: PAY-CAD-5678
+                summary: CAD eTransfer Request
+              USDTransferRequest:
+                value:
+                  bank_name: JPMorgan Chase
+                  account_number: '1234567890'
+                  account_name: John Doe
+                  routing_number: '021000021'
+                  email: recipient@example.com
+                  account_type: checking
+                  amount: '500.00'
+                  currency: USD
+                  reference: Payout for services
+                  client_reference: PAY-USD-5678
+                summary: USD Transfer Request
+              EURTransferRequest:
+                value:
+                  account_number: DE89370400440532013000
+                  account_name: John Doe
+                  amount: '500.00'
+                  currency: EUR
+                  reference: Payout for services
+                  client_reference: PAY-EUR-5678
+                summary: EUR Transfer Request
+              GBPTransferRequest:
+                value:
+                  account_number: '87654321'
+                  account_name: John Doe
+                  amount: '500.00'
+                  currency: GBP
+                  reference: Payout for services
+                  client_reference: PAY-GBP-5678
+                summary: GBP Transfer Request
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InitiateTransferRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InitiateTransferRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateTransferResponse'
+              examples:
+                InitiateTransferResponse:
+                  value:
+                    success: true
+                    message: Transfer initiated successfully
+                    data:
+                      transfer:
+                        id: trf_abc123def456
+                        status: pending
+                        amount: '500.00'
+                        currency: CAD
+                        fee: '5.00'
+                        net_amount: '495.00'
+                        from_wallet_id: wlt_cad_001
+                        to_account:
+                          account_number: '****567'
+                          account_name: John Doe
+                        estimated_completion: '2024-05-21T10:30:00Z'
+                        created_at: '2024-05-20T10:30:00Z'
+                  summary: Initiate Transfer Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /transfers/{transfer_id}:
+    get:
+      operationId: get_transfer_status
+      description: Get detailed status of a specific transfer by transfer ID including
+        recipient details, status, and timestamps.
+      summary: Get Transfer Status
+      parameters:
+      - in: path
+        name: transfer_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Transfers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferDetailsResponse'
+              examples:
+                TransferDetailsResponse:
+                  value:
+                    success: true
+                    message: Transfer retrieved successfully
+                    data:
+                      transfer:
+                        id: trf_abc123def456
+                        status: completed
+                        amount: '500.00'
+                        currency: CAD
+                        fee: '5.00'
+                        net_amount: '495.00'
+                        from_wallet_id: wlt_cad_001
+                        to_account:
+                          account_number: '****567'
+                          transit_number: '00001'
+                          institution_number: '001'
+                          account_name: John Doe
+                        description: Payout for services
+                        reference: PAY-5678
+                        metadata:
+                          contract_id: CTR-123
+                        created_at: '2024-05-20T10:30:00Z'
+                        completed_at: '2024-05-21T09:15:00Z'
+                        timeline:
+                        - status: pending
+                          timestamp: '2024-05-20T10:30:00Z'
+                          note: Transfer initiated
+                        - status: processing
+                          timestamp: '2024-05-20T14:00:00Z'
+                          note: Sent to payment processor
+                        - status: completed
+                          timestamp: '2024-05-21T09:15:00Z'
+                          note: Funds delivered
+                  summary: Transfer Details Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /transfers/list:
+    get:
+      operationId: list_transfers
+      description: List transfer history with pagination and filtering by status and
+        currency.
+      summary: List Transfers
+      parameters:
+      - in: query
+        name: currency
+        schema:
+          type: string
+        description: Filter by currency (CAD, USD, NGN, etc.)
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number (1-indexed)
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Items per page (max 100)
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter by status (pending, processing, completed, failed)
+      tags:
+      - Transfers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransfersResponse'
+              examples:
+                ListTransfersResponse:
+                  value:
+                    success: true
+                    message: Transfers retrieved successfully
+                    data:
+                      transfers:
+                      - id: trf_abc123
+                        status: completed
+                        amount: '500.00'
+                        currency: CAD
+                        fee: '5.00'
+                        to_account:
+                          account_number: '****567'
+                          account_name: John Doe
+                        created_at: '2024-05-20T10:30:00Z'
+                        completed_at: '2024-05-21T09:15:00Z'
+                    pagination:
+                      total: 12
+                      page: 1
+                      page_size: 20
+                      total_pages: 1
+                      has_next: false
+                      has_previous: false
+                  summary: List Transfers Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /transfers/verification:
+    get:
+      operationId: get_transfer_by_reference
+      description: Get transfer status by client reference number. Recommended method
+        for checking transfer status using your own reference.
+      summary: Get Transfer by Reference
+      parameters:
+      - in: query
+        name: reference
+        schema:
+          type: string
+        description: Client reference number provided during transfer initiation
+        required: true
+      tags:
+      - Transfers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferDetailsResponse'
+              examples:
+                TransferDetailsResponse:
+                  value:
+                    success: true
+                    message: Transfer retrieved successfully
+                    data:
+                      transfer:
+                        id: trf_abc123def456
+                        status: completed
+                        amount: '500.00'
+                        currency: CAD
+                        fee: '5.00'
+                        net_amount: '495.00'
+                        from_wallet_id: wlt_cad_001
+                        to_account:
+                          account_number: '****567'
+                          transit_number: '00001'
+                          institution_number: '001'
+                          account_name: John Doe
+                        description: Payout for services
+                        reference: PAY-5678
+                        metadata:
+                          contract_id: CTR-123
+                        created_at: '2024-05-20T10:30:00Z'
+                        completed_at: '2024-05-21T09:15:00Z'
+                        timeline:
+                        - status: pending
+                          timestamp: '2024-05-20T10:30:00Z'
+                          note: Transfer initiated
+                        - status: processing
+                          timestamp: '2024-05-20T14:00:00Z'
+                          note: Sent to payment processor
+                        - status: completed
+                          timestamp: '2024-05-21T09:15:00Z'
+                          note: Funds delivered
+                  summary: Transfer Details Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /wallets:
+    get:
+      operationId: list_wallets
+      description: List all active wallets with current balances for the authenticated
+        client. Returns balance, available balance, and pending balance for each currency.
+      summary: List Wallets
+      tags:
+      - Wallets
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWalletsResponse'
+              examples:
+                ListWalletsResponse:
+                  value:
+                    success: true
+                    message: Wallets retrieved successfully
+                    data:
+                      wallets:
+                      - id: wlt_cad_001
+                        currency: CAD
+                        balance: '1250.50'
+                        available_balance: '1250.50'
+                        pending_balance: '0.00'
+                        status: active
+                        created_at: '2024-01-15T10:30:00Z'
+                      - id: wlt_usd_001
+                        currency: USD
+                        balance: '500.00'
+                        available_balance: '500.00'
+                        pending_balance: '0.00'
+                        status: active
+                        created_at: '2024-02-01T09:15:00Z'
+                      total_wallets: 2
+                  summary: List Wallets Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /wallets/{currency}:
+    get:
+      operationId: get_wallet_balance
+      description: Get current balance for a specific currency wallet including available
+        balance, pending balance, and ledger balance.
+      summary: Get Wallet Balance
+      parameters:
+      - in: path
+        name: currency
+        schema:
+          type: string
+        required: true
+      tags:
+      - Wallets
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletBalanceResponse'
+              examples:
+                WalletBalanceResponse:
+                  value:
+                    success: true
+                    message: Wallet balance retrieved successfully
+                    data:
+                      wallet_id: wlt_cad_001
+                      currency: CAD
+                      balance: '1250.50'
+                      available_balance: '1250.50'
+                      pending_balance: '0.00'
+                      last_transaction_at: '2024-05-20T10:30:00Z'
+                  summary: Wallet Balance Response
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /wallets/{currency}/transactions:
+    get:
+      operationId: get_wallet_transactions
+      description: Get recent transactions for a specific currency wallet with pagination
+        support.
+      summary: Get Wallet Transactions
+      parameters:
+      - in: path
+        name: currency
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of items per page (max 100)
+      tags:
+      - Wallets
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWalletsResponse'
+              examples:
+                ListWalletsResponse:
+                  value:
+                    success: true
+                    message: Wallets retrieved successfully
+                    data:
+                      wallets:
+                      - id: wlt_cad_001
+                        currency: CAD
+                        balance: '1250.50'
+                        available_balance: '1250.50'
+                        pending_balance: '0.00'
+                        status: active
+                        created_at: '2024-01-15T10:30:00Z'
+                      - id: wlt_usd_001
+                        currency: USD
+                        balance: '500.00'
+                        available_balance: '500.00'
+                        pending_balance: '0.00'
+                        status: active
+                        created_at: '2024-02-01T09:15:00Z'
+                      total_wallets: 2
+                  summary: List Wallets Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /wallets/balances:
+    get:
+      operationId: get_all_balances
+      description: Get summary of all wallet balances across all currencies. Returns
+        simplified balance information for quick overview.
+      summary: Get All Balances
+      tags:
+      - Wallets
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - ApiKeyAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWalletsResponse'
+              examples:
+                ListWalletsResponse:
+                  value:
+                    success: true
+                    message: Wallets retrieved successfully
+                    data:
+                      wallets:
+                      - id: wlt_cad_001
+                        currency: CAD
+                        balance: '1250.50'
+                        available_balance: '1250.50'
+                        pending_balance: '0.00'
+                        status: active
+                        created_at: '2024-01-15T10:30:00Z'
+                      - id: wlt_usd_001
+                        currency: USD
+                        balance: '500.00'
+                        available_balance: '500.00'
+                        pending_balance: '0.00'
+                        status: active
+                        created_at: '2024-02-01T09:15:00Z'
+                      total_wallets: 2
+                  summary: List Wallets Response
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+  /webhooks:
+    post:
+      operationId: configure_webhook
+      description: Set or update your webhook URL to receive ALL event notifications
+        (transfers, swaps, payouts, etc.). If a webhook already exists, it will be
+        updated. Returns webhook details and signing secret. **Note:** The secret
+        is only shown when creating a NEW webhook - save it securely for signature
+        verification.
+      summary: Configure Webhook
+      tags:
+      - Webhooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GTPWebhookCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GTPWebhookCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GTPWebhookCreateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GTPWebhook'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GTPWebhook'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+components:
+  schemas:
+    AccountDetailsResponse:
+      type: object
+      description: Response for GET /account endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    AccountTypeEnum:
+      enum:
+      - checking
+      - savings
+      type: string
+      description: |-
+        * `checking` - checking
+        * `savings` - savings
+    BankAccountDetailsResponse:
+      type: object
+      description: Response for GET /banks/{id} endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    ErrorResponse:
+      type: object
+      description: Standard error response wrapper used by all endpoints.
+      properties:
+        success:
+          type: boolean
+          default: false
+          description: Always false for error responses
+        message:
+          type: string
+          description: Human-readable error message
+        errors:
+          description: Error details including code and additional context
+      required:
+      - errors
+      - message
+    ExchangeRatesResponse:
+      type: object
+      description: Response for GET /rates endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    ExecuteSwapRequestRequest:
+      type: object
+      description: Request body for POST /swaps endpoint.
+      properties:
+        from_wallet_id:
+          type: string
+          minLength: 1
+          description: Source wallet ID
+        to_wallet_id:
+          type: string
+          minLength: 1
+          description: Destination wallet ID
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,17}(?:\.\d{0,2})?$
+          description: Amount to swap (in from_currency)
+        from_currency:
+          type: string
+          minLength: 1
+          description: Source currency code (ISO 4217)
+          maxLength: 3
+        to_currency:
+          type: string
+          minLength: 1
+          description: Destination currency code (ISO 4217)
+          maxLength: 3
+        lock_rate:
+          type: boolean
+          default: false
+          description: Lock the current exchange rate for this swap
+        reference:
+          type: string
+          minLength: 1
+          description: External reference number
+          maxLength: 100
+        metadata:
+          description: Custom metadata
+      required:
+      - amount
+      - from_currency
+      - from_wallet_id
+      - to_currency
+      - to_wallet_id
+    ExecuteSwapResponse:
+      type: object
+      description: Response for POST /swaps endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    GTPWebhook:
+      type: object
+      description: Basic webhook serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          description: Webhook endpoint URL
+          maxLength: 500
+        description:
+          type: string
+          description: Description of this webhook
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        total_deliveries:
+          type: integer
+          readOnly: true
+          description: Total delivery attempts
+        successful_deliveries:
+          type: integer
+          readOnly: true
+          description: Successful deliveries
+        failed_deliveries:
+          type: integer
+          readOnly: true
+          description: Failed deliveries
+        success_rate:
+          type: number
+          format: double
+          readOnly: true
+        last_delivery_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Last delivery attempt
+        last_success_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Last successful delivery
+        created_on:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_on:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_on
+      - failed_deliveries
+      - id
+      - last_delivery_at
+      - last_success_at
+      - success_rate
+      - successful_deliveries
+      - total_deliveries
+      - updated_on
+      - url
+    GTPWebhookCreateRequest:
+      type: object
+      description: Serializer for creating a webhook
+      properties:
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          description: Webhook endpoint URL
+          maxLength: 500
+        description:
+          type: string
+          description: Description of this webhook (optional)
+          maxLength: 255
+      required:
+      - url
+    InitiateTransferRequestRequest:
+      type: object
+      description: Request body for POST /transfers endpoint.
+      properties:
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,17}(?:\.\d{0,2})?$
+          description: Transfer amount
+        currency:
+          type: string
+          minLength: 1
+          description: Currency code (ISO 4217, e.g. NGN, CAD, USD, GBP, EUR)
+          maxLength: 3
+        client_reference:
+          type: string
+          minLength: 1
+          description: Unique reference for idempotency
+          maxLength: 100
+        reference:
+          type: string
+          minLength: 1
+          description: Transfer description / narration
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+          description: Alternative field for transfer description
+          maxLength: 255
+        bank_id:
+          type: integer
+          description: Internal Bank ID (required for NGN)
+        account_number:
+          type: string
+          minLength: 1
+          description: Recipient bank account number (required for NGN, USD, GBP,
+            EUR)
+        account_name:
+          type: string
+          minLength: 1
+          description: Recipient bank account name (required for NGN, USD, GBP, EUR)
+        recipient_email:
+          type: string
+          format: email
+          minLength: 1
+          description: Recipient email address (required for CAD e-Transfers)
+        bank_name:
+          type: string
+          minLength: 1
+          description: Recipient bank name (required for USD)
+        routing_number:
+          type: string
+          minLength: 1
+          description: 9-digit routing number (required for USD)
+        email:
+          type: string
+          format: email
+          minLength: 1
+          description: Recipient email address (required for USD)
+        account_type:
+          allOf:
+          - $ref: '#/components/schemas/AccountTypeEnum'
+          description: |-
+            Account type (required for USD)
+
+            * `checking` - checking
+            * `savings` - savings
+        address:
+          type: string
+          minLength: 1
+          description: Recipient street address (optional for USD)
+        state_id:
+          type: integer
+          description: State database ID (optional for USD)
+        city:
+          type: string
+          minLength: 1
+          description: Recipient city (optional for USD)
+        postal_code:
+          type: string
+          minLength: 1
+          description: Recipient postal code (optional for USD)
+        recipient_uid:
+          type: string
+          minLength: 1
+          description: Recipient user UID (for internal transfers only)
+      required:
+      - amount
+      - client_reference
+      - currency
+    InitiateTransferResponse:
+      type: object
+      description: Response for POST /transfers endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    ListBankAccountsResponse:
+      type: object
+      description: Response for GET /accounts endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    ListTransactionsResponse:
+      type: object
+      description: Response for GET /transactions endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+        pagination: {}
+      required:
+      - data
+      - message
+      - pagination
+    ListTransfersResponse:
+      type: object
+      description: Response for GET /transfers endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+        pagination: {}
+      required:
+      - data
+      - message
+      - pagination
+    ListWalletsResponse:
+      type: object
+      description: Response for GET /wallets endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    PatchedUpdateAccountRequestRequest:
+      type: object
+      description: Request body for PATCH /account endpoint.
+      properties:
+        contact_email:
+          type: string
+          format: email
+          minLength: 1
+          description: Primary contact email for notifications
+        contact_phone:
+          type: string
+          minLength: 1
+          description: Contact phone number (E.164 format recommended)
+          maxLength: 20
+        webhook_url:
+          type: string
+          format: uri
+          minLength: 1
+          description: HTTPS URL for webhook notifications
+        metadata:
+          description: Custom metadata (key-value pairs)
+    SandboxFundingRequestRequest:
+      type: object
+      description: Request payload for sandbox wallet funding.
+      properties:
+        currency:
+          type: string
+          minLength: 1
+          description: ISO 4217 currency code (e.g. CAD, NGN, USD, EUR, GBP)
+          maxLength: 3
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,17}(?:\.\d{0,2})?$
+          description: Amount to fund
+        sender_email:
+          type: string
+          format: email
+          minLength: 1
+          description: Sender email (CAD only)
+        sender_name:
+          type: string
+          minLength: 1
+          description: Sender name (CAD only)
+        sender_fi:
+          type: string
+          minLength: 1
+          description: Sender financial institution (CAD only)
+        narration:
+          type: string
+          minLength: 1
+          description: Narration for transfer (NGN only)
+        source_account_number:
+          type: string
+          minLength: 1
+          description: Source account number or IBAN
+        source_account_name:
+          type: string
+          minLength: 1
+          description: Source account name
+        source_bank_name:
+          type: string
+          minLength: 1
+          description: Source bank name
+        routing_number:
+          type: string
+          minLength: 1
+          description: Routing number (USD only)
+        source_iban:
+          type: string
+          minLength: 1
+          description: Source IBAN (EUR only)
+        source_bic:
+          type: string
+          minLength: 1
+          description: Source BIC (EUR only)
+        source_sort_code:
+          type: string
+          minLength: 1
+          description: Source sort code (GBP only)
+        memo:
+          type: string
+          minLength: 1
+          description: Optional memo
+        client_reference:
+          type: string
+          minLength: 1
+          description: Optional client reference/idempotency key
+      required:
+      - amount
+      - currency
+    SandboxFundingResponse:
+      type: object
+      description: Response for sandbox wallet funding request.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    SpecificRateResponse:
+      type: object
+      description: Response for GET /rates/{from}/{to} endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    StatusEnum:
+      enum:
+      - active
+      - paused
+      - disabled
+      type: string
+      description: |-
+        * `active` - Active
+        * `paused` - Paused
+        * `disabled` - Disabled
+    SwapDetailsResponse:
+      type: object
+      description: Response for GET /swaps/{id} endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    TransferDetailsResponse:
+      type: object
+      description: Response for GET /transfers/{id} endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    UpdateAccountResponse:
+      type: object
+      description: Response for PATCH /account endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+    ValidateBankAccountRequestRequest:
+      type: object
+      description: Request body for POST /banks/validate endpoint.
+      properties:
+        currency:
+          type: string
+          minLength: 1
+          description: Currency code (NGN, CAD, USD, GBP, EUR)
+          maxLength: 3
+        bank_code:
+          type: string
+          minLength: 1
+          description: Internal bank ID (required only for NGN, omitted for other
+            currencies)
+          maxLength: 50
+        account_number:
+          type: string
+          minLength: 1
+          description: Account number or email address (for CAD eTransfer)
+          maxLength: 100
+      required:
+      - account_number
+      - currency
+    WalletBalanceResponse:
+      type: object
+      description: Response for GET /wallets/{id}/balance endpoint.
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data: {}
+      required:
+      - data
+      - message
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'API key for authentication. Format: `gtp_<environment>_<key>`'
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+servers:
+- url: /gtp/v1
+  description: Current Environment (Relative Path)
+- url: https://gtp-sandbox.expediergo.com/gtp/v1
+  description: Sandbox Environment (for testing)
+- url: https://gtp.expediergo.com/gtp/v1
+  description: Production Environment
+tags:
+- name: Account
+  description: Account management and details
+- name: Banks
+  description: Bank account operations
+- name: Wallets
+  description: Multi-currency wallet management
+- name: Transactions
+  description: Transaction history and details
+- name: Transfers
+  description: Initiate and manage transfers
+- name: Exchange Rates
+  description: Currency exchange rates
+- name: Swaps
+  description: Currency swap operations
+- name: Webhooks
+  description: Webhook configuration and management
+- name: Admin
+  description: Administrative operations (requires admin API key)
