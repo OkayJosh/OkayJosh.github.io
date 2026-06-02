@@ -1,0 +1,38 @@
+name: Generate PR Technical Document
+
+on:
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+      GEMINI_API_KEY:
+        required: true
+
+jobs:
+  generate_doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Central Script Repo
+        uses: actions/checkout@v4
+        with:
+          repository: OkayJosh/OkayJosh.github.io
+          ref: master
+          path: scripts_repo
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install Dependencies
+        run: |
+          pip install PyGithub google-generativeai
+          
+      - name: Run PR Doc Generator
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python scripts_repo/scripts/generate_pr_doc.py
