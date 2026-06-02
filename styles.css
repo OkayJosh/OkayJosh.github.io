@@ -510,3 +510,31 @@ section {
         display: none;
     }
 }
+
+/* Press Cards */
+.press-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.press-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.press-card h4 {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
+.press-domain {
+    font-size: 0.8rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
