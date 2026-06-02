@@ -278,20 +278,15 @@ section {
     overflow: hidden;
 }
 
-.avatar-placeholder {
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(135deg, var(--primary-glow), #3b82f6);
+.profile-image {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     margin: 0 auto 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    font-family: var(--font-heading);
-    font-weight: 800;
-    color: white;
+    display: block;
+    object-fit: cover;
     box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+    border: 3px solid var(--primary-glow);
 }
 
 .profile-stats {
