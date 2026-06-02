@@ -55,7 +55,7 @@ a:hover {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
 }
@@ -549,8 +549,8 @@ section {
 
 @media (min-width: 1024px) {
     .content-layout {
-        grid-template-columns: 2.2fr 1fr;
-        gap: 4rem;
+        grid-template-columns: 3fr 1fr;
+        gap: 3rem;
         align-items: start;
     }
     
