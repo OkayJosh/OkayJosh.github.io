@@ -1,0 +1,41 @@
+name: Cross-Publish Blog Post
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - '_posts/**.md'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Get changed files
+        id: changed-files
+        run: |
+          echo "files=$(git diff --name-only HEAD^ HEAD | grep '_posts/.*\.md$' || true)" >> $GITHUB_OUTPUT
+          
+      - name: Run Publish Script
+        if: steps.changed-files.outputs.files != ''
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          HASHNODE_API_KEY: ${{ secrets.HASHNODE_API_KEY }}
+          MEDIUM_INTEGRATION_TOKEN: ${{ secrets.MEDIUM_INTEGRATION_TOKEN }}
+          MEDIUM_USER_ID: ${{ secrets.MEDIUM_USER_ID }}
+          HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
+        run: |
+          for file in ${{ steps.changed-files.outputs.files }}; do
+            python scripts/publish_blog.py "$file"
+          done

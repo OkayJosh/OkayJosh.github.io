@@ -1,0 +1,37 @@
+name: Generate Blog Post from PR
+
+on:
+  pull_request:
+    types:
+      - closed
+  pull_request_review:
+    types:
+      - submitted
+
+jobs:
+  generate_blog:
+    runs-on: ubuntu-latest
+    if: (github.event.pull_request.merged == true) || (github.event_name == 'pull_request_review')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install Dependencies
+        run: |
+          pip install PyGithub google-generativeai
+          
+      - name: Run PR to Blog Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          PORTFOLIO_REPO: OkayJosh/OkayJosh.github.io
+        run: |
+          python scripts/pr_to_blog.py
