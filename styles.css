@@ -538,3 +538,53 @@ section {
     letter-spacing: 1px;
     font-weight: 600;
 }
+
+/* Layout Styles */
+.content-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+@media (min-width: 1024px) {
+    .content-layout {
+        grid-template-columns: 2.2fr 1fr;
+        gap: 4rem;
+        align-items: start;
+    }
+    
+    .sidebar {
+        position: sticky;
+        top: 6rem; /* stick to top when scrolling */
+        max-height: calc(100vh - 8rem);
+        overflow-y: auto;
+    }
+    
+    /* hide scrollbar for sidebar */
+    .sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(139, 92, 246, 0.3);
+        border-radius: 4px;
+    }
+}
+
+.press-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.press-domain {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.press-domain img {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+}
