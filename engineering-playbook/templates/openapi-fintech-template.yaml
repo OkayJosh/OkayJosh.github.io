@@ -1,22 +1,22 @@
 openapi: 3.0.3
 info:
-  title: GTP API - Sandbox
+  title: Fintech Infrastructure API
   version: 1.0.0
   x-logo:
-    url: https://s3-eu-west-1.amazonaws.com/tpd/logos/5f977ff6e7ffb200012faf5c/0x0.png
-    altText: Expedier Logo
-    href: https://expedier.co
+    url: https://example.com/logo.png
+    altText: Company Logo
+    href: https://example.com
   description: |-
-    Guaranty Trust Payments - Expedier APIs (Sandbox Environment)
+    Core Banking and Payments APIs (Sandbox Environment)
 
-    Looking to test the APIs interactively? Use our **[Swagger UI Console](/gtp/v1/schema/swagger-ui/)** to execute requests directly against the sandbox backend.
+    Looking to test the APIs interactively? Use our **[Swagger UI Console](/v1/schema/swagger-ui/)** to execute requests directly against the sandbox backend.
   contact:
-    name: Expedier API Support
-    email: support@expedier.co
-    url: https://expedier.co/support
+    name: API Support
+    email: support@example.com
+    url: https://example.com/support
   license:
-    name: Proprietary
-    url: https://expedier.co/terms
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 paths:
   /account:
     get:
