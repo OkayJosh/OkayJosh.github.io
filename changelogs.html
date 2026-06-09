@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Changelogs | Joshua Olatunji</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Markdown & Mermaid Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+        window.mermaid = mermaid;
+    </script>
+
+    <style>
+        .changelog-container {
+            margin-top: 100px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            min-height: 80vh;
+        }
+
+        .changelog-sidebar {
+            background: rgba(20, 20, 20, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: fit-content;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .changelog-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .changelog-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .changelog-item:hover, .changelog-item.active {
+            background: rgba(167, 139, 250, 0.1);
+            border-color: rgba(167, 139, 250, 0.3);
+        }
+
+        .changelog-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .changelog-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .changelog-content {
+            background: rgba(20, 20, 20, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Markdown Styling */
+        .markdown-body {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: var(--text-primary);
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        .markdown-body h1 { font-size: 2rem; }
+        .markdown-body h2 { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3em; }
+        .markdown-body pre {
+            background: rgba(0,0,0,0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .markdown-body code {
+            font-family: monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .markdown-body pre code { background: transparent; padding: 0; }
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        .markdown-body th, .markdown-body td {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .markdown-body th {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+        }
+        .mermaid { margin-top: 1.5rem; margin-bottom: 1.5rem; text-align: center; }
+
+        @media (max-width: 768px) {
+            .changelog-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob-bg"></div>
+    
+    <nav class="glass-nav">
+        <div class="nav-content container">
+            <div class="logo">JO<span>.</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#ventures">Ventures & Projects</a></li>
+                <li><a href="index.html#experience">Experience</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="changelogs.html">Changelogs</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="changelog-container">
+            <div class="changelog-sidebar">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Deployments</h2>
+                <ul class="changelog-list" id="changelog-list">
+                    <li>Loading changelogs...</li>
+                </ul>
+            </div>
+            <div class="changelog-content">
+                <div id="changelog-viewer" class="markdown-body">
+                    <h2>Select a deployment log from the sidebar to view details.</h2>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const listEl = document.getElementById('changelog-list');
+            const viewerEl = document.getElementById('changelog-viewer');
+
+            try {
+                const res = await fetch('changelogs/index.json');
+                if (!res.ok) throw new Error("Could not fetch changelogs");
+                const logs = await res.json();
+                
+                if (logs.length === 0) {
+                    listEl.innerHTML = "<li>No deployments found.</li>";
+                    return;
+                }
+
+                listEl.innerHTML = '';
+                logs.forEach((log, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'changelog-item';
+                    li.innerHTML = `
+                        <div class="changelog-date">${log.date}</div>
+                        <div class="changelog-title">${log.title}</div>
+                    `;
+                    li.onclick = () => loadLog(log.file, li);
+                    listEl.appendChild(li);
+
+                    // Load the first one by default
+                    if (index === 0) loadLog(log.file, li);
+                });
+
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = "<li>Failed to load changelogs.</li>";
+            }
+
+            async function loadLog(fileUrl, element) {
+                // Update active state
+                document.querySelectorAll('.changelog-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+
+                viewerEl.innerHTML = "<p>Loading...</p>";
+                try {
+                    const res = await fetch(fileUrl);
+                    if (!res.ok) throw new Error("Failed to fetch markdown file");
+                    const text = await res.text();
+                    
+                    // Parse markdown
+                    let html = marked.parse(text);
+                    
+                    // Handle Mermaid blocks generated by AI (usually ```mermaid)
+                    // marked.js wraps them in <pre><code class="language-mermaid">
+                    html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, '<div class="mermaid">$1</div>');
+
+                    viewerEl.innerHTML = html;
+
+                    // Render mermaid diagrams
+                    if (window.mermaid) {
+                        try {
+                            await window.mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+                        } catch (e) {
+                            console.error("Mermaid error:", e);
+                        }
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    viewerEl.innerHTML = "<p>Error loading document.</p>";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
