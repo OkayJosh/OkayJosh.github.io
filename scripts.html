@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Changelogs | Joshua Olatunji</title>
+    <title>Internal Scripts & Tools | Joshua Olatunji</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,13 +13,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Markdown & Mermaid Libraries -->
+    <!-- Markdown for Syntax Highlighting -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
-        window.mermaid = mermaid;
-    </script>
 
     <style>
         .changelog-container {
@@ -62,8 +57,11 @@
 
         .changelog-date {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 0.25rem;
+            font-weight: 600;
         }
 
         .changelog-title {
@@ -78,6 +76,26 @@
             border-radius: 16px;
             padding: 2rem;
             overflow-y: auto;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(167, 139, 250, 0.2);
+            border: 1px solid rgba(167, 139, 250, 0.5);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: rgba(167, 139, 250, 0.4);
         }
 
         /* Markdown Styling */
@@ -85,43 +103,24 @@
             color: var(--text-secondary);
             line-height: 1.6;
         }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+        .markdown-body h1, .markdown-body h2 {
             color: var(--text-primary);
-            margin-top: 1.5em;
+            margin-top: 1em;
             margin-bottom: 0.5em;
         }
-        .markdown-body h1 { font-size: 2rem; }
-        .markdown-body h2 { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3em; }
+        .markdown-body p { margin-bottom: 1.5rem; }
         .markdown-body pre {
             background: rgba(0,0,0,0.5);
             padding: 1rem;
             border-radius: 8px;
             overflow-x: auto;
             border: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.95rem;
         }
         .markdown-body code {
             font-family: monospace;
-            background: rgba(255,255,255,0.1);
-            padding: 0.2em 0.4em;
-            border-radius: 3px;
-            font-size: 0.9em;
+            background: transparent;
         }
-        .markdown-body pre code { background: transparent; padding: 0; }
-        .markdown-body table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1em;
-        }
-        .markdown-body th, .markdown-body td {
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 0.75rem;
-            text-align: left;
-        }
-        .markdown-body th {
-            background: rgba(255,255,255,0.05);
-            color: var(--text-primary);
-        }
-        .mermaid { margin-top: 1.5rem; margin-bottom: 1.5rem; text-align: center; }
 
         @media (max-width: 768px) {
             .changelog-container {
@@ -150,14 +149,15 @@
     <main class="container">
         <div class="changelog-container">
             <div class="changelog-sidebar">
-                <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Deployments</h2>
-                <ul class="changelog-list" id="changelog-list">
-                    <li>Loading changelogs...</li>
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Internal Tools</h2>
+                <ul class="changelog-list" id="script-list">
+                    <li>Loading scripts...</li>
                 </ul>
             </div>
             <div class="changelog-content">
-                <div id="changelog-viewer" class="markdown-body">
-                    <h2>Select a deployment log from the sidebar to view details.</h2>
+                <button id="copyBtn" class="copy-btn" style="display: none;">Copy to Clipboard</button>
+                <div id="script-viewer" class="markdown-body">
+                    <h2>Select a script from the sidebar to view its code.</h2>
                 </div>
             </div>
         </div>
@@ -165,73 +165,83 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const listEl = document.getElementById('changelog-list');
-            const viewerEl = document.getElementById('changelog-viewer');
+            const listEl = document.getElementById('script-list');
+            const viewerEl = document.getElementById('script-viewer');
+            const copyBtn = document.getElementById('copyBtn');
+            let currentRawCode = "";
 
             try {
-                const res = await fetch('changelogs/index.json');
-                if (!res.ok) throw new Error("Could not fetch changelogs");
-                const logs = await res.json();
+                const res = await fetch('scripts/index.json');
+                if (!res.ok) throw new Error("Could not fetch scripts list");
+                const scripts = await res.json();
                 
-                if (logs.length === 0) {
-                    listEl.innerHTML = "<li>No deployments found.</li>";
+                if (scripts.length === 0) {
+                    listEl.innerHTML = "<li>No scripts found.</li>";
                     return;
                 }
 
                 listEl.innerHTML = '';
-                logs.forEach((log, index) => {
+                scripts.forEach((scriptData, index) => {
                     const li = document.createElement('li');
                     li.className = 'changelog-item';
                     li.innerHTML = `
-                        <div class="changelog-date">${log.date}</div>
-                        <div class="changelog-title">${log.title}</div>
+                        <div class="changelog-date">${scriptData.language}</div>
+                        <div class="changelog-title">${scriptData.title}</div>
                     `;
-                    li.onclick = () => loadLog(log.file, li);
+                    li.onclick = () => loadScript(scriptData, li);
                     listEl.appendChild(li);
 
                     // Load the first one by default
-                    if (index === 0) loadLog(log.file, li);
+                    if (index === 0) loadScript(scriptData, li);
                 });
 
             } catch (err) {
                 console.error(err);
-                listEl.innerHTML = "<li>Failed to load changelogs.</li>";
+                listEl.innerHTML = "<li>Failed to load scripts.</li>";
             }
 
-            async function loadLog(fileUrl, element) {
+            async function loadScript(scriptData, element) {
                 // Update active state
                 document.querySelectorAll('.changelog-item').forEach(el => el.classList.remove('active'));
                 element.classList.add('active');
 
-                viewerEl.innerHTML = "<p>Loading...</p>";
+                viewerEl.innerHTML = "<p>Loading script...</p>";
+                copyBtn.style.display = "none";
+                
                 try {
-                    const res = await fetch(fileUrl);
-                    if (!res.ok) throw new Error("Failed to fetch markdown file");
+                    const res = await fetch(scriptData.file);
+                    if (!res.ok) throw new Error("Failed to fetch script file");
                     const text = await res.text();
+                    currentRawCode = text;
                     
-                    // Parse markdown
-                    let html = marked.parse(text);
+                    // Render description and code block using Markdown
+                    const mdContent = `
+## ${scriptData.title}
+${scriptData.description}
+
+\`\`\`${scriptData.language}
+${text}
+\`\`\`
+                    `;
                     
-                    // Handle Mermaid blocks generated by AI (usually ```mermaid)
-                    // marked.js wraps them in <pre><code class="language-mermaid">
-                    html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, '<div class="mermaid">$1</div>');
-
-                    viewerEl.innerHTML = html;
-
-                    // Render mermaid diagrams
-                    if (window.mermaid) {
-                        try {
-                            await window.mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
-                        } catch (e) {
-                            console.error("Mermaid error:", e);
-                        }
-                    }
+                    viewerEl.innerHTML = marked.parse(mdContent);
+                    copyBtn.style.display = "block";
 
                 } catch (err) {
                     console.error(err);
-                    viewerEl.innerHTML = "<p>Error loading document.</p>";
+                    viewerEl.innerHTML = "<p>Error loading script.</p>";
                 }
             }
+
+            copyBtn.addEventListener('click', () => {
+                if (currentRawCode) {
+                    navigator.clipboard.writeText(currentRawCode).then(() => {
+                        const originalText = copyBtn.innerText;
+                        copyBtn.innerText = "Copied!";
+                        setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
+                    });
+                }
+            });
         });
     </script>
 </body>

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "generate-changelog",
+    "title": "Automated Changelog Generator",
+    "description": "A Bash script that automatically analyzes Git diffs and generates an Architecture Decision Record (ADR) prompt for ChatGPT before pushing the log to GitHub.",
+    "file": "scripts/generate-changelog.sh",
+    "language": "bash"
+  },
+  {
+    "id": "generate-pr-doc",
+    "title": "PR Document Generator",
+    "description": "A Python utility to automatically extract and format Pull Request documentation.",
+    "file": "scripts/generate_pr_doc.py",
+    "language": "python"
+  },
+  {
+    "id": "pr-to-blog",
+    "title": "PR to Blog Post Converter",
+    "description": "Python script that translates technical pull requests into user-friendly blog posts.",
+    "file": "scripts/pr_to_blog.py",
+    "language": "python"
+  },
+  {
+    "id": "publish-blog",
+    "title": "Blog Publisher",
+    "description": "Automated script to push and publish new blog posts to the website infrastructure.",
+    "file": "scripts/publish_blog.py",
+    "language": "python"
+  }
+]
